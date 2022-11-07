@@ -5,7 +5,7 @@ Salvatore Adalberto Esposito - Gabriele Iurlaro
 The defined problem is encoded as a list of tuples removing duplicates:
 
 ```python
-all_states = list(set([tuple(x) for x in problem(5, seed=42)]))
+generated_problem = list(set([tuple(x) for x in problem(5, seed=42)]))
 ```
 Population is defined as a deque since it requires costant time for appending an individual.
 
@@ -41,9 +41,9 @@ The number of generation required to reach the plateau is little(below 100).
 
 | N    | w    | generation |
 | ---- | ---- | ---------- |
-| 5    | 5    | 23         |
-| 10   | 10   | 55         |
-| 20   | 29   | 34         |
-| 100  | 216  | 41         |
-| 500  | 1557 | 61         |
-| 1000 | 3757 | 63         |
+| 5    | 5    | 21         |
+| 10   | 10   | 53         |
+| 20   | 29   | 32         |
+| 100  | 216  | 39         |
+| 500  | 1557 | 59         |
+| 1000 | 3757 | 61         |
