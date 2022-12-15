@@ -1,8 +1,8 @@
 # Lab 3 - Nim
 
-Salvatore Adalberto Esposito - Gabriele Iurlaro
+In group with Gabriele Iurlaro - 294917
 
-### Task 3.1
+## Task 3.1 - hardcoded
 
 The main idea of the hardcoded strategy is that we cannot do always the same thing for the entire duration of the game. Like chess, that is divided in opening, middle game and end game, we can divide Nim in 2 phases:
 
@@ -17,17 +17,51 @@ The `aggressive` strategies seems to be very effective against the other one, re
 
 |                 | gabriele | pure random | aggressive | Optimal |
 | --------------- | -------- | ----------- | ---------- | ------- |
-| **gabriele**    | 1.0 %    | 0.81 %      | 0.0 %      | 0.0 %   |
-| **pure random** | 0.17 %   | 0.54 %      | 0.18 %     | 0.0 %   |
-| **aggressive**  | 1.0 %    | 0.76 %      | 0.48 %     | 0.0 %   |
-| **Optimal**     | 1.0 %    | 1.0 %       | 1.0 %      | 1.0 %   |
+| **gabriele**    | 1.0      | 0.81        | 0.0        | 0.0     |
+| **pure random** | 0.17     | 0.54        | 0.18       | 0.0     |
+| **aggressive**  | 1.0      | 0.76        | 0.48       | 0.0     |
+| **Optimal**     | 1.0      | 1.0         | 1.0        | 1.0     |
 
-### Task 3.2
+## Task 3.2 - evolved rules
 
-We evolved two strategies (the aggressive one is not evolved due to the fact we developed it too late):
+We evolved two strategies:
 
 - `evolvable_strategy` is the one mentioned before, the parameter to evolve are:
   - `max_k`: a maximum amout of sticks
-  - `turn_strategy`: when we turn strategies
+  - `turn_strategies`: when we turn strategies
 - `evolvable_random_strategy`: since the one before plays always the same, we introduced a bit of randomness in the play, resulting in slightly better result.
 
+There was the idea to embed some kind of aggressive strategy in the evolved one, but we had the idea too late and it was difficult. In the next days we will provide an implementation.
+Our idea is to have a lot of players for a future use.
+
+## Task 3.3 - minmax
+
+We implemented a simple recursive algorithm for min-max, that was able to win against the optimal strategy, but only for small cases. Without a limit in the depth, it was unfeasible to use it, also with alpha-beta pruning.
+
+## Task 3.4 - reinforcement learning
+
+During this journey in trying to implement a Reinforcement learning agent to play Nim, we have explored several ideas:
+
+- Learn directly a value for the state and choose the action that lead to this state(:-1:)
+- Learn the Q table (:boom:)
+
+Since with the first approach we wasn't able to achieve good result, we moved on the second one.
+
+### Reinforcement learning details
+
+First when initializing the player, we generate all possible $(s, a)$ pair(with $ s \in S, a \in A$), with a very simple recursive algorithm. The recursion is also our main bottleneck, and we are not able to play Nim bigger then 8(For exmaple, for `NIM_SIZE = 7`, we generate `4404719` pairs in 3 minutes).
+
+We concentrate our analysis in learn to win against the `optimal_strategy`. We have found that the agent, if learns only to win against it, can learn also to win against the other strategy we have used before.
+
+For example, after `5000` plays:
+
+| opponent | winning rate |
+|--|--|
+|pure_random |0.65 |
+|aggressive |0.66|
+|optimal_strategy | 0.34 |
+
+#### Possible improvements
+By talking with other people, we found out that some imporvements could be useful:
+- learn to solve a bigger Nim for solving also lower `NIM_SIZE` Nim
+- We generate all the state action pair before the learning start. It could be useful to save a state only if it's discovered
