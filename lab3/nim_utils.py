@@ -4,6 +4,7 @@ from itertools import accumulate
 from operator import xor
 import numpy as np
 from copy import deepcopy, copy
+from typing import Callable
 
 Nimply = namedtuple("Nimply", "row, num_objects")
 
@@ -113,3 +114,25 @@ def pure_random(state: Nim) -> Nimply:
     row = random.choice([r for r, c in enumerate(state.rows) if c > 0])
     num_objects = random.randint(1, state.rows[row])
     return Nimply(row, num_objects)
+
+def gabriele(state: Nim) -> Nimply:
+    """Pick always the maximum possible number of the lowest row"""
+    possible_moves = [(r, o) for r, c in enumerate(state.rows) for o in range(1, c + 1)]
+    return Nimply(*max(possible_moves, key=lambda m: (-m[0], m[1])))
+
+## Evaluating function
+def evaluate_against(strategy: Callable, against: Callable, NIM_SIZE = 5, NUM_MATCHES = 100) -> float:
+    opponent = (strategy, against)
+    won = 0
+    for _ in range(NUM_MATCHES):
+        nim = Nim(NIM_SIZE)
+        player = 0
+        while nim:
+            # logging.debug(nim)
+            ply = opponent[player](nim)
+            nim.nimming(ply)
+            player = 1 - player
+        if player == 1: # winner is the zero
+            won += 1
+        # logging.debug(f"player {1 - player} has won.")
+    return won / NUM_MATCHES
